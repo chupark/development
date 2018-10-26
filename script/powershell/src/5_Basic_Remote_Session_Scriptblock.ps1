@@ -20,6 +20,32 @@ $ErrorActionPreference = "SilentlyContinue"
 
 $ServerList = Get-Content -Path $ServerListPath
 
+$functions = {
+    # Background 실행 ScriptBlock 안에 function을 선언합니다..
+    function SendSlack {
+        Param(
+            [string]$channel
+            ,[string]$pretext
+            ,[string]$title
+            ,[string]$color
+            ,[string]$message
+        )            
+
+        # Send Slack
+        $payload = @{
+            #"channel" = "#general"
+            "channel" = $channel
+            "icon_emoji" = ":bomb:"
+            "title" = $title
+            "color" = $color
+            "text" = $message
+            "username" = "Performance Checker BOT"
+        }
+        $webhook = "https://hooks.slack.com/services/**********************************"            
+        Invoke-WebRequest -Body (ConvertTo-Json -Compress -InputObject $payload) -Method Post -UseBasicParsing -Uri $webhook | Out-Null
+    }     
+}
+
 Foreach ($ServerName in $ServerList) {
 
     # Terminal이 종료되어도 실행을 보장하기 위하여 Background로 실행합니다.
@@ -28,31 +54,7 @@ Foreach ($ServerName in $ServerList) {
 
         # need to export environment config (JSON)           
         $AlertSendTime = $null
-        $IsAlertSend   = $false
-
-        # Background 실행 ScriptBlock 안에 function을 선언합니다..
-        function SendSlack {
-            Param(
-                [string]$channel
-                ,[string]$pretext
-                ,[string]$title
-                ,[string]$color
-                ,[string]$message
-            )            
-    
-            # Send Slack
-            $payload = @{
-                #"channel" = "#general"
-                "channel" = $channel
-                "icon_emoji" = ":bomb:"
-                "title" = $title
-                "color" = $color
-                "text" = $message
-                "username" = "Performance Checker BOT"
-            }
-            $webhook = "https://hooks.slack.com/services/**********************************"            
-            Invoke-WebRequest -Body (ConvertTo-Json -Compress -InputObject $payload) -Method Post -UseBasicParsing -Uri $webhook | Out-Null
-        }      
+        $IsAlertSend   = $false 
 
         If($ServerName.ToLower() -imatch "win") {
             
@@ -235,7 +237,7 @@ Foreach ($ServerName in $ServerList) {
             #Invoke-Command -ComputerName $ServerName -Authentication Basic -SessionOption $o -Credential $oscred -ScriptBlock { Get-Process }
         }        
 
-    } -ArgumentList $Servername
+    } -ArgumentList $Servername -InitializationScript $functions
 
 }
 
