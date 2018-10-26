@@ -203,7 +203,7 @@ Foreach ($ServerName in $ServerList) {
                     # 고객사마다 다르지만 40%에서 Alert을 받기를 원하는 고객도 있습니다.
                     # 보통 60% 정도를 Warning 으로 보고 80%를 Critical로 고려하시면됩니다. configruation.json 에 설정합니다.
                     if ($ServerStatus.ProcessorTime -gt $Env.CpuUtilLimit) {
-                        SendSlack "#general"  "[Performance-Alert]" "*$ServerName*" "warning" ("CPU Utili is high!! : ("+$ServerStatus.ProcessorTime+"%)")
+                        SendSlack  "[Performance-Alert]" "*$ServerName*" "warning" ("CPU Utili is high!! : ("+$ServerStatus.ProcessorTime+"%)")
                     }
 
 
@@ -212,14 +212,14 @@ Foreach ($ServerName in $ServerList) {
                         if (  (($AlertSendTime -eq $null) -or (((Get-Date)-$AlertSendTime).Second -gt 120 )) ) {
                             if ( $IsAlertSend -eq $false ) {
                                 $AlertSendTime = (Get-Date)
-                                SendSlack "#general"  "[GameServer-Alert]" $ServerName "danger" ("*"+$ServerStatus.GameProcName+"* stopped on "+$ServerName+" at _$AlertSendTime`_.")
+                                SendSlack  "[GameServer-Alert]" $ServerName "danger" ("*"+$ServerStatus.GameProcName+"* stopped on "+$ServerName+" at _$AlertSendTime`_.")
                                 $IsAlertSend = $true
                             }
                         } Else {
                             $IsAlertSend = $false
                         }
                     } ElseIf ($isAlertSend -eq $true) {
-                        SendSlack "#general"  "[GameServer-Alert]" $ServerName "good" ("*$ServerName* started at _$AlertSendTime`_.")
+                        SendSlack  "[GameServer-Alert]" $ServerName "good" ("*$ServerName* started at _$AlertSendTime`_.")
                         $isAlertSend = $false
                     }
                 }
