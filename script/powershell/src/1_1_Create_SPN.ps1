@@ -13,16 +13,39 @@
 #>
 
 
-# 1. Login Azure account using ID/PW
-Login-AzureRmAccount
+# 1. Login Azure account
+Login-AzAccount
 
-# Select the Subscription to use
-$subscriptionid = Read-Host "Enter the Subscription Id"
-Select-AzureRmSubscription -SubscriptionId $subscriptionid
-$id = Get-AzureRmSubscription -SubscriptionId $subscriptionid
+# Select  subscr
+$subscription = Get-AzureRmSubscription
+Write-Host "Your Subscriptions is"
 
-# Print the subscription info.
-Write-Host "ID: "$id.Name", SubscriptionId: "$id.SubscriptionId", TenantId "$id.TenantId""
+for ($i=1; $i -lt $subscription.Count + 1; $i++) {
+    $i.ToString() + ". [ " + $subscription[$i - 1].Name + " ]"
+}
+
+Write-Host ""
+
+## Select Subscription
+while($true) {
+    try {
+        Write-Host "Select Your Subscritpion for use"
+        [int]$selectSub = Read-Host
+        ## -1, -2, 0 등 0이하 정수를 입력해도 이상하게 구독이 읽어져서 추가한 코드
+        if ($selectSub -le 0) {
+            $selectSub = 10000
+        }
+        Select-AzureRmSubscription -Subscription $subscription.Id[$selectSub - 1] `
+                                    -TenantId $subscription.TenantId[$selectSub - 1] `
+                                    -Name $subscription.Name[$selectSub - 1]
+        break
+    } catch [System.Exception] {
+        Write-Host "Wrong Selection !!" -ForegroundColor Red
+        #Write-Host $_.Exception.GetType().FullName -ForegroundColor Red
+        #Write-Host $_.Exception.Message -ForegroundColor Red
+        #Write-Host ""
+    }
+}
 
 # 2. Create Azure AD Application After Setting the AD app credential / Info.
 Add-Type -Assembly System.Web
