@@ -43,8 +43,8 @@
 
      },
      "slack":
-	 {
-		 "webhookUri" : "https://hooks.slack.com/services/**********************************",
-	 	"channel" : "#general"
-	 }
+     {
+        "webhookUri" : "https://hooks.slack.com/services/**********************************",
+	"channel" : "#general"
+     }
 }
