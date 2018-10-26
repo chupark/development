@@ -41,5 +41,10 @@
         "linuxuri" : "https://**********.blob.core.windows.net/scripts/InitialScriptLinux.sh",
         "winuri" : "https://**********.blob.core.windows.net/scripts/InitialScriptWindows.ps1"
 
-     }
+     },
+     "slack":
+	 {
+		 "webhookUri" : "https://hooks.slack.com/services/**********************************",
+	 	"channel" : "#general"
+	 }
 }
