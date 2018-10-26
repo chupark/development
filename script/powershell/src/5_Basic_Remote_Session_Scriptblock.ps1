@@ -19,13 +19,13 @@ $ServerListPath = '~\Servername.txt'
 $ErrorActionPreference = "SilentlyContinue"
 
 $ServerList = Get-Content -Path $ServerListPath
+$slackConfig = Get-Content -Raw -Path '~\configuration.json' | ConvertFrom-Json
 
 $functions = {
     # Background 실행 ScriptBlock 안에 function을 선언합니다..
     function SendSlack {
         Param(
-            [string]$channel
-            ,[string]$pretext
+            [string]$pretext
             ,[string]$title
             ,[string]$color
             ,[string]$message
@@ -34,14 +34,14 @@ $functions = {
         # Send Slack
         $payload = @{
             #"channel" = "#general"
-            "channel" = $channel
+            "channel" = $slackConfig.channel
             "icon_emoji" = ":bomb:"
             "title" = $title
             "color" = $color
             "text" = $message
             "username" = "Performance Checker BOT"
         }
-        $webhook = "https://hooks.slack.com/services/**********************************"            
+        $webhook = "$slackConfig.webhookUri"
         Invoke-WebRequest -Body (ConvertTo-Json -Compress -InputObject $payload) -Method Post -UseBasicParsing -Uri $webhook | Out-Null
     }     
 }
