@@ -71,12 +71,12 @@ Foreach ($ServerName in $ServerList) {
                 $ServerStatus = $null
                     
                 # Session 재사용을 위하여 Session.State가 Opened이고 Session.Avilability가 Available 인 Session을 가져오고 없으면 새로 생성하여 사용합니다.
-                $Session = Get-PSSession -ComputerName $ServerName | ? {$_.State -eq "Opened" -and $_.Availability -eq "Available"}
+                $Session = Get-PSSession -ComputerName $ServerName -Credential $oscred | ? {$_.State -eq "Opened" -and $_.Availability -eq "Available"}
                 if ($Session -eq $null) {
-                    $Session = New-PSSession -ComputerName $ServerName 
+                    $Session = New-PSSession -ComputerName $ServerName -Credential $oscred
                 }                
                 
-                $ServerStatus = Invoke-Command -Session $Session -Credential $oscred -ScriptBlock { ## {{{
+                $ServerStatus = Invoke-Command -Session $Session -ScriptBlock { ## {{{
                 #$ServerStatus = Invoke-Command  -ComputerName 127.0.0.1 -ScriptBlock { ## {{{
                     # 원격 실행
                     # GameServer의 Process Count를 체크합니다.
