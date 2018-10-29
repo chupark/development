@@ -1,7 +1,11 @@
 #모니터링 대상 서버에 winrm 관련 기본 설정이 되었는지 확인
 Start-Process "C:\windows\system32\winrm.cmd" "qc /q"
-Start-Process "C:\windows\system32\winrm.cmd" "set winrm/config/service @{AllowUnencrypted=`"true`"}"
-Start-Process "C:\windows\system32\winrm.cmd" "set winrm/config/service/auth @{Basic=`"true`"}"
+#Start-Process "C:\windows\system32\winrm.cmd" "set winrm/config/service @{AllowUnencrypted=`"true`"}"
+#Start-Process "C:\windows\system32\winrm.cmd" "set winrm/config/service/auth @{Basic=`"true`"}"
+#위의 Start-Process로 명령시 value가 변하지 않음....
+Set-Item WSMan:\localhost\Client\AllowUnencrypted -Value "true"
+Set-item WSMan:\localhost\Client\Auth\Basic -Value "true"
+Set-item wsman:\localhost\Client\TrustedHosts -value * -Force
 
 #윈도우 업데이트 끄기(=레지스트리 변경 작업아래와 동일하게)
 Set-ItemProperty HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU -Name NoAutoUpdate -Value 1
