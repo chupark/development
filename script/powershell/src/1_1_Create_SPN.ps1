@@ -70,7 +70,13 @@ $spnname = $azurespn.ServicePrincipalNames
 $spnRole = "Contributor"
 
 # 4. Create a SP Role
-New-AzureRmRoleAssignment -RoleDefinitionName $spnRole -ServicePrincipalName $appId
+Invoke-Expression "New-AzureRmRoleAssignment -RoleDefinitionName $spnRole -ServicePrincipalName $appId" -ErrorVariable badoutput
+if($badoutput) {
+    while ($badoutput) {
+        Invoke-Expression "New-AzureRmRoleAssignment -RoleDefinitionName $spnRole -ServicePrincipalName $appId" -ErrorVariable badoutput
+        Start-Sleep -Seconds 1
+    }
+}
 
 $cred = New-object System.Management.Automation.PSCredential($appId.Guid, $securepassword)
 
