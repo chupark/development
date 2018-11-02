@@ -35,9 +35,10 @@ while($true) {
         if ($selectSub -le 0) {
             $selectSub = 10000
         }
-        Select-AzureRmSubscription -Subscription $subscription.Id[$selectSub - 1] `
+        $yourSub = Select-AzureRmSubscription -Subscription $subscription.Id[$selectSub - 1] `
                                     -TenantId $subscription.TenantId[$selectSub - 1] `
                                     -Name $subscription.Name[$selectSub - 1]
+        $yourSub
         break
     } catch [System.Exception] {
         Write-Host "Wrong Selection !!" -ForegroundColor Red
@@ -81,4 +82,4 @@ if($badoutput) {
 $cred = New-object System.Management.Automation.PSCredential($appId.Guid, $securepassword)
 
 #Login using SPN with (App ID / App PW)
-#Add-AzureRmAccount -Credential $cred -TenantId $id.TenantId -ServicePrincipal
+#Add-AzureRmAccount -Credential $cred -TenantId $yourSub.Tenant.Id -ServicePrincipal
